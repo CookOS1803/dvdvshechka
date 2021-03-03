@@ -1,0 +1,131 @@
+<mxfile host="app.diagrams.net" modified="2021-02-18T18:34:38.358Z" agent="5.0 (Windows)" etag="XHrJxcClIAMoIfMH80A6" version="14.4.2" type="github">
+  <diagram id="L9yfEgyofHLYhI9cg3Kn" name="Page-1">
+    <mxGraphModel dx="1178" dy="652" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ThbEsooNjrUReJghIwgG-32" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-1" target="ThbEsooNjrUReJghIwgG-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-1" value="void diamond()" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="40" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;endArrow=none;endFill=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="414" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-2" value="void init()" style="ellipse;whiteSpace=wrap;html=1;align=center;labelPosition=center;verticalLabelPosition=middle;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="352" y="40" width="124" height="82.67" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-3" value="int main(int argc, char** argv)" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="40" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-33" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-5" target="ThbEsooNjrUReJghIwgG-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-5" value="&lt;div&gt;&lt;p&gt;glClear&lt;/p&gt;&lt;p&gt;(GL_COLOR_BUFFER_BIT)&lt;/p&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="150" y="150" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-34" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-6" target="ThbEsooNjrUReJghIwgG-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-6" value="glColor3f(0.0, 0.0, 0.0)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-35" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-7" target="ThbEsooNjrUReJghIwgG-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-7" value="glBegin(GL_QUADS)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-36" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-8" target="ThbEsooNjrUReJghIwgG-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-8" value="glVertex2i(50, 0)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-37" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-9" target="ThbEsooNjrUReJghIwgG-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-9" value="glVertex2i(100, 50)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-38" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-10" target="ThbEsooNjrUReJghIwgG-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-10" value="glVertex2i(50, 100)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-39" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-11" target="ThbEsooNjrUReJghIwgG-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-11" value="glVertex2i(0, 50)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="690" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-40" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;edgeStyle=orthogonalEdgeStyle;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-12" target="ThbEsooNjrUReJghIwgG-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-12" value="glEnd()" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="780" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-59" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-58" target="ThbEsooNjrUReJghIwgG-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-13" value="glFlush()" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="870" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-14" value="glClearColor(1.0, 1.0, 1.0, 0.0)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-15" value="&lt;div&gt;glMatrixMode&lt;/div&gt;&lt;div&gt;(GL_PROJECTION)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-60" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" edge="1" parent="1" source="ThbEsooNjrUReJghIwgG-16" target="ThbEsooNjrUReJghIwgG-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-16" value="gluOrtho2D(0.0, 100.0, 0.0, 100.0)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="330" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-23" value="glutInit(&amp;argc, argv)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-24" value="&lt;div&gt;glutInitDisplayMode&lt;/div&gt;&lt;div&gt;(GLUT_SINGLE | GLUT_RGB)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-25" value="glutInitWindowPosition (0, 0)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="330" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-26" value="glutInitWindowSize(40, 70)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="420" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-27" value="glutCreateWindow (&quot;Вариант 12&quot;)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-30" value="glutMainLoop()" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="780" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-54" value="void init()" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="540" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-55" value="&lt;div&gt;glutDisplayFunc&lt;/div&gt;&lt;div&gt;(diamond)&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="540" y="690" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-58" value="&lt;div&gt;Выход&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="170" y="960" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-61" value="&lt;div&gt;Выход&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="354" y="420" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ThbEsooNjrUReJghIwgG-62" value="&lt;div&gt;Выход&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="540" y="870" width="120" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
