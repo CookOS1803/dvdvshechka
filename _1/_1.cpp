@@ -5,6 +5,7 @@
 #include "glut.h"
 
 void diamond();
+void init();
 
 int main(int argc, char** argv)
 {
@@ -14,14 +15,19 @@ int main(int argc, char** argv)
 	glutInitWindowSize(40, 70);
 	glutCreateWindow("Вариант 12");
 
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glMatrixMode(GL_PROJECTION);
-	gluOrtho2D(0.0, 100.0, 0.0, 100.0);
+	init();
 
 	glutDisplayFunc(diamond);
 	glutMainLoop();
 
 	return 0;
+}
+
+void init()
+{
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glMatrixMode(GL_PROJECTION);
+	gluOrtho2D(0.0, 100.0, 0.0, 100.0);
 }
 
 void diamond()
