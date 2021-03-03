@@ -27,7 +27,7 @@ void init()
 {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glMatrixMode(GL_PROJECTION);
-	gluOrtho2D(-50, 50, -50, 50);
+	gluOrtho2D(-20, 20, -20, 20);
 }
 
 void set_pixel(int x, int y)
@@ -58,7 +58,7 @@ void line(int x0, int y0, int x1, int y1)
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(1.0, 1.0, 1.0);
 	line(2, 11, 6, 6);
 }
 
