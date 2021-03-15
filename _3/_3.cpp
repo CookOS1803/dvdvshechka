@@ -4,18 +4,14 @@
 #pragma comment(lib, "glut32.lib")
 #include "glut.h"
 
-//
-int _x = 0, _y = 1;
-
 void set_pixel(int x, int y);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
 void display();
-void playerController(unsigned char key, int x, int y);
 
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(100, 100);
 	glutCreateWindow("Вариант 12");
@@ -25,7 +21,6 @@ int main(int argc, char** argv)
 	gluOrtho2D(0, 20, 0, 20);
 
 	glutDisplayFunc(display);
-	glutKeyboardFunc(playerController);
 	glutMainLoop();
 
 	return 0;
@@ -51,36 +46,34 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 
 	if (dx >= dy)
 	{
-		p = 2 * dy + dx;
+		p = 2*dy - dx;
 
 		while (x != xend)
 		{
 			x += xInc;
-			set_pixel(x, y0);
 			if (p < 0)
-				p += 2 * dy;
+				p += 2*dy;
 			else
 			{
 				y += yInc;
-				set_pixel(x0, y);
-				p += 2 * (dy - dx);
+				p += 2*(dy - dx);
 			}
 			set_pixel(x, y);
 		}
 	}
 	else
 	{
-		p = 2 * dx - dy;
+		p = 2*dx - dy;
 
 		while (y != xend)
 		{
 			y += yInc;
 			if (p < 0)
-				p += 2 * dx;
+				p += 2*dx;
 			else
 			{
 				x += xInc;
-				p += 2 * (dx - dy);
+				p += 2*(dx - dy);
 			}
 			set_pixel(x, y);
 		}
@@ -91,28 +84,5 @@ void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(1.0, 1.0, 1.0);
-	//linesBrasenhem(2, 11, 6, 6);
-	linesBrasenhem(_x, _y, 10, 10);
-	glutSwapBuffers();
-}
-
-//
-void playerController(unsigned char key, int x, int y)
-{
-	switch (key)
-	{
-		case 'w': case'W':
-			_y +=1;
-			break;
-		case 's': case 'S':
-			_y -=1;
-			break;
-		case 'a': case 'A':
-			_x -=1;
-			break;
-		case 'd': case 'D':
-			_x +=1;
-			break;
-	}
-	glutPostRedisplay();
+	linesBrasenhem(2, 11, 6, 6);
 }
