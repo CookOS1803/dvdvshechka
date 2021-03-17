@@ -4,9 +4,10 @@
 #pragma comment(lib, "glut32.lib")
 #include "glut.h"
 
+void init();
+void display();
 void set_pixel(int x, int y);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
-void display();
 
 int main(int argc, char** argv)
 {
@@ -16,14 +17,25 @@ int main(int argc, char** argv)
 	glutInitWindowSize(100, 100);
 	glutCreateWindow("Вариант 12");
 
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glMatrixMode(GL_PROJECTION);
-	gluOrtho2D(0, 20, 0, 20);
-
+	init();
 	glutDisplayFunc(display);
 	glutMainLoop();
 
 	return 0;
+}
+
+void init()
+{
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glMatrixMode(GL_PROJECTION);
+	gluOrtho2D(0, 20, 0, 20);
+}
+
+void display()
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1.0, 1.0, 1.0);
+	linesBrasenhem(2, 11, 6, 6);
 }
 
 void set_pixel(int x, int y)
@@ -65,7 +77,7 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 	{
 		p = 2*dx - dy;
 
-		while (y != xend)
+		while (y != yend)
 		{
 			y += yInc;
 			if (p < 0)
@@ -79,10 +91,4 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 		}
 	}
 	
-}
-void display()
-{
-	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(1.0, 1.0, 1.0);
-	linesBrasenhem(2, 11, 6, 6);
 }
