@@ -56,7 +56,7 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 
 	set_pixel(x, y);
 
-	if (dx >= dy)
+	if (dx > dy)
 	{
 		p = 2*dy - dx;
 
