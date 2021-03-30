@@ -7,7 +7,7 @@
 void init();
 void display();
 void set_pixels(int pixels[][2], int n);
-void circleBrasenhem(int xc, int yc, int r);
+void ellipseBrasenhem(int xc, int yc, int rx, int ry);
 
 int main(int argc, char** argv)
 {
@@ -35,7 +35,7 @@ void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(1.0, 1.0, 1.0);
-	circleBrasenhem(2, 11, 10);
+	ellipseBrasenhem(2, 11, 15, 10);
 }
 
 void set_pixels(int pixels[][2], int n)
@@ -49,34 +49,57 @@ void set_pixels(int pixels[][2], int n)
 	glFlush();
 }
 
-void circleBrasenhem(int xc, int yc, int r)
+void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 {
-	int x = 0, y = r;
-	int p = 1 - r;
+	int x = 0, y = ry;
+	int p = ry*ry - rx*rx*ry + rx*rx/4;
+	int ry2 = ry*ry,
+		rx2 = rx*rx;
 
-	while (x <= y)
+	while (ry2*x < rx2*y)
 	{
-		int pixels[][2] =
+		int pixels[][2] = 
 		{
 			{xc + x, yc + y},
 			{xc - x, yc + y},
 			{xc - x, yc - y},
-			{xc + x, yc - y},
-			{xc + y, yc + x},
-			{xc - y, yc + x},
-			{xc - y, yc - x},
-			{xc + y, yc - x},
+			{xc + x, yc - y}
 		};
-		
-		set_pixels(pixels, 8);
 
-		x++;
-		if (p > 0)
-		{
-			y--;
-			p += 2*(x - y) + 1;
-		}
+		set_pixels(pixels, 4);
+
+		if (p < 0)
+			p += ry2*(2*x + 3);
 		else
-			p += 2*x + 1;
+		{
+			p += ry2*(2*x + 3) - 2*rx2*y;
+			y--;
+		}
+		x++;
+	}
+
+	p = ry2*x*x + ry2*x + ry2/4 + rx2*y*y - 2*rx2*y + rx2 - rx2*ry2;
+	
+
+	while (y != 0)
+	{
+		int pixels[][2] = 
+		{
+			{xc + x, yc + y},
+			{xc - x, yc + y},
+			{xc - x, yc - y},
+			{xc + x, yc - y}
+		};
+
+		set_pixels(pixels, 4);
+
+		if (p < 0)
+			p += rx2*(3 - 2*y);
+		else
+		{
+			p += rx2*(3 - 2*y) + 2*ry2*(x + 1);
+			x++;
+		}
+		y--;
 	}
 }
