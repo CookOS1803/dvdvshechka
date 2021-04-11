@@ -35,7 +35,7 @@ void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(1.0, 1.0, 1.0);
-	ellipseBrasenhem(2, 11, 15, 10);
+	ellipseBrasenhem(2, 11, 10, 5);
 }
 
 void set_pixels(int pixels[][2], int n)
@@ -68,20 +68,20 @@ void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 
 		set_pixels(pixels, 4);
 
+		x++;
 		if (p < 0)
-			p += ry2*(2*x + 3);
+			p += ry2*(2*x + 1);
 		else
 		{
-			p += ry2*(2*x + 3) - 2*rx2*y;
 			y--;
+			p += ry2*(2*x + 1) - 2*rx2*y;
 		}
-		x++;
 	}
+		
+	x = rx, y = 0;
+	p = rx*rx - ry*ry*rx + ry*ry/4;
 
-	p = ry2*x*x + ry2*x + ry2/4 + rx2*y*y - 2*rx2*y + rx2 - rx2*ry2;
-	
-
-	while (y != 0)
+	while (ry2*x >= rx2*y)
 	{
 		int pixels[][2] = 
 		{
@@ -93,13 +93,13 @@ void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 
 		set_pixels(pixels, 4);
 
+		y++;
 		if (p < 0)
-			p += rx2*(3 - 2*y);
+			p += rx2*(2*y + 1);
 		else
 		{
-			p += rx2*(3 - 2*y) + 2*ry2*(x + 1);
-			x++;
+			x--;
+			p += rx2*(2*y + 1) - 2*ry2*x;
 		}
-		y--;
 	}
 }
