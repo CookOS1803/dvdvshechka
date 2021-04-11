@@ -52,9 +52,9 @@ void set_pixels(int pixels[][2], int n)
 void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 {
 	int x = 0, y = ry;
-	int p = ry*ry - rx*rx*ry + rx*rx/4;
 	int ry2 = ry*ry,
 		rx2 = rx*rx;
+	int p = ry2 - rx2*ry + rx2/4;
 
 	while (ry2*x < rx2*y)
 	{
@@ -79,7 +79,7 @@ void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 	}
 		
 	x = rx, y = 0;
-	p = rx*rx - ry*ry*rx + ry*ry/4;
+	p = rx2 - ry2*rx + ry2/4;
 
 	while (ry2*x >= rx2*y)
 	{
