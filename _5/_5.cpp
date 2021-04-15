@@ -54,7 +54,7 @@ void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 	int x = 0, y = ry;
 	int ry2 = ry*ry,
 		rx2 = rx*rx;
-	int p = ry2 - rx2*ry + rx2/4;
+	int p = 4*ry2 - 4*rx2*ry + rx2;
 
 	while (ry2*x < rx2*y)
 	{
@@ -70,18 +70,17 @@ void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 
 		x++;
 		if (p < 0)
-			p += ry2*(2*x + 1);
+			p += 4*ry2*(2*x + 1);
 		else
 		{
 			y--;
-			p += ry2*(2*x + 1) - 2*rx2*y;
+			p += 4*ry2*(2*x + 1) - 8*rx2*y;
 		}
 	}
 		
-	x = rx, y = 0;
-	p = rx2 - ry2*rx + ry2/4;
+	p = (2*x + 1)*(2*x + 1)*ry2 + 4*(y - 1)*(y - 1)*rx2 - 4*rx2*ry2;
 
-	while (ry2*x >= rx2*y)
+	while (y != -1)
 	{
 		int pixels[][2] = 
 		{
@@ -93,13 +92,12 @@ void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 
 		set_pixels(pixels, 4);
 
-		y++;
-		if (p < 0)
-			p += rx2*(2*y + 1);
-		else
-		{
-			x--;
-			p += rx2*(2*y + 1) - 2*ry2*x;
+		y--;
+		if (p < 0) {
+			x++;
+			p += 8*ry2*x - 4*rx2*(2*y - 1);
 		}
+		else
+			p += 4*rx2*(1 - 2*y);
 	}
 }
