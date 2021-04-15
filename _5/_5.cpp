@@ -93,7 +93,8 @@ void ellipseBrasenhem(int xc, int yc, int rx, int ry)
 		set_pixels(pixels, 4);
 
 		y--;
-		if (p < 0) {
+		if (p < 0)
+		{
 			x++;
 			p += 8*ry2*x - 4*rx2*(2*y - 1);
 		}
