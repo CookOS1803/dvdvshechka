@@ -35,7 +35,7 @@ void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(1.0, 1.0, 1.0);
-	linesBrasenhem(2, 11, 6, 6);
+	linesBrasenhem(10, 3, 8, 10);
 }
 
 void set_pixel(int x, int y)

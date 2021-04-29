@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <tchar.h>
+#include <iostream>
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glut32.lib")
 #include "glut.h"
@@ -8,6 +9,8 @@ void init();
 void display();
 void set_pixel(int x, int y);
 void set_pixels(int pixels[][2], int n);
+int** get_vectors(int vertices[][2], int n);
+bool is_convex(int vertices[][2], int n);
 void fill(int vertices[][2], int n);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
 
@@ -35,6 +38,8 @@ void init()
 
 void display()
 {
+	const int N = 5;
+
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(1.0, 1.0, 1.0);
 
@@ -48,9 +53,13 @@ void display()
 		{10, 10}, {20, 0}, {30, 20}, {30, 30}, {30, 50}
 	};
 
-	for (int i = 0; i < 4; i++)
+	
+	if (is_convex(vertices, N)) std::cout << "Norm";
+	else						std::cout << "Net";
+
+	for (int i = 0; i < N - 1; i++)
 		linesBrasenhem(vertices[i][0], vertices[i][1], vertices[i + 1][0], vertices[i + 1][1]);
-	linesBrasenhem(vertices[4][0], vertices[4][1], vertices[0][0], vertices[0][1]);
+	linesBrasenhem(vertices[N - 1][0], vertices[N - 1][1], vertices[0][0], vertices[0][1]);
 
 	fill(vertices, 5);
 }
@@ -74,6 +83,42 @@ void set_pixels(int pixels[][2], int n)
 	glFlush();
 }
 
+int** get_vectors(int vertices[][2], int n)
+{
+	int** vectors = new int*[n];
+	for (int i = 0; i < n; i++)
+		vectors[i] = new int[2];
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		vectors[i][0] = vertices[i + 1][0] - vertices[i][0];
+		vectors[i][1] = vertices[i + 1][1] - vertices[i][1];
+	}
+	vectors[n - 1][0] = vertices[0][0] - vertices[n - 1][0];
+	vectors[n - 1][1] = vertices[0][1] - vertices[n - 1][1];
+
+	return vectors;
+}
+
+bool is_convex(int vertices[][2], int n)
+{
+	int** vectors = get_vectors(vertices, n);
+
+	int t = vectors[n - 1][0]*vectors[0][1] - vectors[n - 1][1]*vectors[0][0];
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		if (t*(vectors[i][0]*vectors[i + 1][1] - vectors[i][1]*vectors[i + 1][0]) < 0)
+		{
+			delete[] vectors;
+			return false;
+		}
+	}
+
+	delete[] vectors;
+	return true;
+}
+
 void fill(int vertices[][2], int n)
 {
 	int xmax = vertices[0][0],
@@ -81,6 +126,7 @@ void fill(int vertices[][2], int n)
 		ymax = vertices[0][1],
 	    ymin = ymax;
 	bool inside = false, changed = false;
+	int** vectors = get_vectors(vertices, n);
 
 	for (int i = 1; i < n; i++)
 	{
@@ -93,30 +139,67 @@ void fill(int vertices[][2], int n)
 
 	while (ymax > ymin)
 	{
-		for (int x = xmin; x < xmax; x++)
+		int i = 0, x1 = 0, x2 = 0;
+		float x = 0;
+		for (;i < n; i++)
 		{
-			for (int i = 0; i < n - 1; i++)
+			x = (ymax - vertices[i][1])*((float)vectors[i][0]/vectors[i][1]) + vertices[i][0];
+			if (x >= xmin and x <= xmax)
 			{
-				if ((x - vertices[i][0]) * (vertices[i + 1][1] - vertices[i][1]) == (ymax - vertices[i][1]) * (vertices[i + 1][0] - vertices[i][0]))
+				x1 = x;
+				i++;
+				break;
+			}
+		}
+		for (;i < n; i++)
+		{
+			x = (ymax - vertices[i][1])*((float)vectors[i][0]/vectors[i][1]) + vertices[i][0];
+			if (x >= xmin and x <= xmax)
+			{
+				x2 = x;
+				if (x2 < x1)
 				{
-					inside = inside ? false : true;
-					changed = true;
-					break;
-				}
+					x = x2;
+					x2 = x1;
+					x1 = x;
+				};
+				break;
 			}
-			if (not changed and (x - vertices[n - 1][0]) * (vertices[0][1] - vertices[n - 1][1]) == (ymax - vertices[n - 1][1]) * (vertices[0][0] - vertices[n - 1][0]))
-			{
-				inside = inside ? false : true;
-			}
-
-			if (inside) set_pixel(x, ymax);
-			changed = false;
 		}
 
-		inside = false;
+		while (x1 != x2) set_pixel(x1++, ymax);
 
 		ymax--;
 	}
+
+	//while (ymax > ymin)
+	//{
+	//	for (int x = xmin; x < xmax; x++)
+	//	{
+	//		for (int i = 0; i < n - 1; i++)
+	//		{
+	//			if ((x - vertices[i][0]) * (vertices[i + 1][1] - vertices[i][1]) == (ymax - vertices[i][1]) * (vertices[i + 1][0] - vertices[i][0]))
+	//			{
+	//				inside = inside ? false : true;
+	//				changed = true;
+	//				break;
+	//			}
+	//		}
+	//		if (not changed and (x - vertices[n - 1][0]) * (vertices[0][1] - vertices[n - 1][1]) == (ymax - vertices[n - 1][1]) * (vertices[0][0] - vertices[n - 1][0]))
+	//		{
+	//			inside = inside ? false : true;
+	//		}
+
+	//		if (inside) set_pixel(x, ymax);
+	//		changed = false;
+	//	}
+
+	//	inside = false;
+
+	//	ymax--;
+	//}
+
+	delete[] vectors;
 }
 
 void linesBrasenhem(int x0, int y0, int xend, int yend)
