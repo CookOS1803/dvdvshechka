@@ -18,6 +18,9 @@
     <ClInclude Include="glut.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="stack.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="glut.dll">
@@ -29,6 +32,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_6.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="stack.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="stack_impl.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

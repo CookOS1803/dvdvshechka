@@ -4,16 +4,22 @@
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glut32.lib")
 #include "glut.h"
+#include "stack.h"
 
 using namespace std;
+
+struct vector
+{
+	int x, y;
+};
 
 void init();
 void display();
 void set_pixel(int x, int y);
-void set_pixels(int pixels[][2], int n);
-int** get_vectors(int** vertices, int n);
-bool is_convex(int** vertices, int n);
-//void fill(int vertices[][2], int n);
+void set_pixels(vector* pixels, int n);
+vector* get_vectors(vector* vertices, int n);
+bool is_convex(vector* vertices, int n);
+void fill(vector* vertices, int n);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
 
 int main(int argc, char** argv)
@@ -42,32 +48,31 @@ void display()
 {
 	int n;
 
-	cout << "Enter n:";
+	cout << "Enter n: ";
 	cin >> n;
 
-	int** vertices = new int*[n];
-	for (int i = 0; i < n; i++)
-		vertices[i] = new int[2];
+	vector* vertices = new vector[n];
 
 	for (int i = 0; i < n; i++)
 	{
 		cout << "Enter " << i + 1 << "st: ";
-		cin >> vertices[i][0] >> vertices[i][1];
-	}
-
-	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(1.0, 1.0, 1.0);
+		cin >> vertices[i].x >> vertices[i].y;
+	}	
 	
 	if (is_convex(vertices, n)) cout << "Convex";
 	else						cout << "NonConvex";
 
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1, 0, 0);
+
 	for (int i = 0; i < n - 1; i++)
-		linesBrasenhem(vertices[i][0], vertices[i][1], vertices[i + 1][0], vertices[i + 1][1]);
-	linesBrasenhem(vertices[n - 1][0], vertices[n - 1][1], vertices[0][0], vertices[0][1]);
+		linesBrasenhem(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y);
+	linesBrasenhem(vertices[n - 1].x, vertices[n - 1].y, vertices[0].x, vertices[0].y);
 
+	glColor3f(1, 1, 1);
+
+	fill(vertices, n);
 	delete[] vertices;
-
-	//fill(vertices, 5);
 }
 
 void set_pixel(int x, int y)
@@ -78,43 +83,41 @@ void set_pixel(int x, int y)
 	glFlush();
 }
 
-void set_pixels(int pixels[][2], int n)
+void set_pixels(vector* pixels, int n)
 {
 	glBegin(GL_POINTS);
 
 	for (int i = 0; i < n; i++)
-		glVertex2iv(pixels[i]);
+		glVertex2i(pixels[i].x, pixels[i].y);
 
 	glEnd();
 	glFlush();
 }
 
-int** get_vectors(int** vertices, int n)
+vector* get_vectors(vector* vertices, int n)
 {
-	int** vectors = new int*[n];
-	for (int i = 0; i < n; i++)
-		vectors[i] = new int[2];
+	vector* vectors = new vector[n];
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		vectors[i][0] = vertices[i + 1][0] - vertices[i][0];
-		vectors[i][1] = vertices[i + 1][1] - vertices[i][1];
+		vectors[i].x = vertices[i + 1].x - vertices[i].x;
+		vectors[i].y = vertices[i + 1].y - vertices[i].y;
 	}
-	vectors[n - 1][0] = vertices[0][0] - vertices[n - 1][0];
-	vectors[n - 1][1] = vertices[0][1] - vertices[n - 1][1];
+	vectors[n - 1].x = vertices[0].x - vertices[n - 1].x;
+	vectors[n - 1].y = vertices[0].y - vertices[n - 1].y;
 
 	return vectors;
 }
 
-bool is_convex(int** vertices, int n)
+bool is_convex(vector* vertices, int n)
 {
-	int** vectors = get_vectors(vertices, n);
+	vector* vectors = get_vectors(vertices, n);
 
-	int t = vectors[n - 1][0]*vectors[0][1] - vectors[n - 1][1]*vectors[0][0];
+	int t = vectors[n - 1].x*vectors[0].y - vectors[n - 1].y*vectors[0].x;
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		if (t*(vectors[i][0]*vectors[i + 1][1] - vectors[i][1]*vectors[i + 1][0]) < 0)
+		if (t*(vectors[i].x*vectors[i + 1].y - vectors[i].y*vectors[i + 1].x) < 0)
 		{
 			delete[] vectors;
 			return false;
@@ -125,88 +128,70 @@ bool is_convex(int** vertices, int n)
 	return true;
 }
 
-//void fill(int vertices[][2], int n)
-//{
-//	int xmax = vertices[0][0],
-//		xmin = xmax,
-//		ymax = vertices[0][1],
-//	    ymin = ymax;
-//	bool inside = false, changed = false;
-//	int** vectors = get_vectors(vertices, n);
-//
-//	for (int i = 1; i < n; i++)
-//	{
-//		if (vertices[i][0] > xmax) xmax = vertices[i][0];
-//		else if (vertices[i][0] < xmin) xmin = vertices[i][0];
-//
-//		if (vertices[i][1] > ymax) ymax = vertices[i][1];
-//		else if (vertices[i][1] < ymin) ymin = vertices[i][1];
-//	}
-//
-//	while (ymax > ymin)
-//	{
-//		int i = 0, x1 = 0, x2 = 0;
-//		float x = 0;
-//		for (;i < n; i++)
-//		{
-//			x = (ymax - vertices[i][1])*((float)vectors[i][0]/vectors[i][1]) + vertices[i][0];
-//			if (x >= xmin and x <= xmax)
-//			{
-//				x1 = x;
-//				i++;
-//				break;
-//			}
-//		}
-//		for (;i < n; i++)
-//		{
-//			x = (ymax - vertices[i][1])*((float)vectors[i][0]/vectors[i][1]) + vertices[i][0];
-//			if (x >= xmin and x <= xmax)
-//			{
-//				x2 = x;
-//				if (x2 < x1)
-//				{
-//					x = x2;
-//					x2 = x1;
-//					x1 = x;
-//				};
-//				break;
-//			}
-//		}
-//
-//		while (x1 != x2) set_pixel(x1++, ymax);
-//
-//		ymax--;
-//	}
-//
-//	//while (ymax > ymin)
-//	//{
-//	//	for (int x = xmin; x < xmax; x++)
-//	//	{
-//	//		for (int i = 0; i < n - 1; i++)
-//	//		{
-//	//			if ((x - vertices[i][0]) * (vertices[i + 1][1] - vertices[i][1]) == (ymax - vertices[i][1]) * (vertices[i + 1][0] - vertices[i][0]))
-//	//			{
-//	//				inside = inside ? false : true;
-//	//				changed = true;
-//	//				break;
-//	//			}
-//	//		}
-//	//		if (not changed and (x - vertices[n - 1][0]) * (vertices[0][1] - vertices[n - 1][1]) == (ymax - vertices[n - 1][1]) * (vertices[0][0] - vertices[n - 1][0]))
-//	//		{
-//	//			inside = inside ? false : true;
-//	//		}
-//
-//	//		if (inside) set_pixel(x, ymax);
-//	//		changed = false;
-//	//	}
-//
-//	//	inside = false;
-//
-//	//	ymax--;
-//	//}
-//
-//	delete[] vectors;
-//}
+void fill(vector* vertices, int n)
+{
+	int xmin = vertices[0].x,
+		m = 0,
+		ymax = vertices[0].y,
+	    ymin = ymax;
+	vector* vectors = get_vectors(vertices, n);
+	stack<int>* xs = nullptr;
+	
+	for (int i = 1; i < n; i++)
+	{
+		if (vertices[i].x <= xmin)
+		{
+			xmin = vertices[i].x;
+			m = i;
+		}
+
+		if (vertices[i].y > ymax) ymax = vertices[i].y;
+		else if (vertices[i].y < ymin) ymin = vertices[i].y;
+	}
+
+	while (ymax != ymin - 1)
+	{
+		int x1 = 0, x2 = 0;
+		int x = 0;
+
+		for (int i = m; i < n; i++)
+		{
+			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
+				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
+
+			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
+			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
+		}
+
+		for (int i = 0; i < m; i++)
+		{
+			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
+				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
+
+			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
+			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
+		}
+
+		while (xs)
+		{
+			xs = out_stack(xs, &x1);
+			//if (xs)
+			//{
+			//	if (x1 == x2) xs = out_stack(xs, &x1);
+			//}
+			if (not xs) break;
+			xs = out_stack(xs, &x2);
+
+			linesBrasenhem(x1, ymax, x2, ymax);
+		}
+
+		ymax--;
+	}
+
+	delete[] vectors;
+}
 
 void linesBrasenhem(int x0, int y0, int xend, int yend)
 {
@@ -257,3 +242,32 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 
 //вогнутость ряльно проблема из-за пересечения (а иногда и суко совпадения) прямых от сторон.
 //надо сначала посчитать все точки пересечения, а потом рисовать между парами точек, пушо если точка имеет нецелый x, то всё, отчисление
+
+
+//10 10
+//20 20
+//30 10
+//40 20
+//50 10
+//60 20
+//70 10
+//70 20
+//60 30
+//50 20
+//40 30
+//30 20
+//20 30
+//10 20 *
+
+
+//10 0
+//60 15
+//40 30
+//45 5
+//30 20
+
+//10 10
+//60 10
+//60 60
+//30 0
+//10 60
