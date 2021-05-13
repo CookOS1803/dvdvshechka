@@ -18,9 +18,8 @@ void display();
 void set_pixel(int x, int y);
 void set_pixels(vector* pixels, int n);
 vector* get_vectors(vector* vertices, int n);
-bool is_convex(vector* vertices, int n);
-//void fill(vector* vertices, int n);
-void fill_triangle(vector v1, vector v2, vector v3);
+int is_convex(vector* vertices, int n);
+void fill_convex(vector* vertices, int n);
 void fillsgood(vector* vertices, int n);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
 
@@ -61,7 +60,7 @@ void display()
 		cin >> vertices[i].x >> vertices[i].y;
 	}	
 	
-	if (is_convex(vertices, n)) cout << "Convex";
+	if (is_convex(vertices, n) == -1) cout << "Convex";
 	else						cout << "NonConvex";
 
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -74,6 +73,7 @@ void display()
 	glColor3f(1, 1, 1);
 
 	fillsgood(vertices, n);
+	//fill_convex(vertices, n);
 	delete[] vertices;
 }
 
@@ -111,7 +111,7 @@ vector* get_vectors(vector* vertices, int n)
 	return vectors;
 }
 
-bool is_convex(vector* vertices, int n)
+int is_convex(vector* vertices, int n)
 {
 	vector* vectors = get_vectors(vertices, n);
 
@@ -122,123 +122,40 @@ bool is_convex(vector* vertices, int n)
 		if (t*(vectors[i].x*vectors[i + 1].y - vectors[i].y*vectors[i + 1].x) < 0)
 		{
 			delete[] vectors;
-			return false;
+			return i;
 		}
 	}
 
 	delete[] vectors;
-	return true;
+	return -1;
 }
 
-//void fill(vector* vertices, int n)
-//{
-//	int xmin = vertices[0].x,
-//		m = 0,
-//		ymax = vertices[0].y,
-//	    ymin = ymax;
-//	vector* vectors = get_vectors(vertices, n);
-//	stack<int>* xs = nullptr;
-//	
-//	for (int i = 1; i < n; i++)
-//	{
-//		if (vertices[i].x <= xmin)
-//		{
-//			xmin = vertices[i].x;
-//			m = i;
-//		}
-//
-//		if (vertices[i].y > ymax) ymax = vertices[i].y;
-//		else if (vertices[i].y < ymin) ymin = vertices[i].y;
-//	}
-//
-//	while (ymax != ymin - 1)
-//	{
-//		int x1 = 0, x2 = 0;
-//		int x = 0;
-//
-//		for (int i = m; i < n; i++)
-//		{
-//			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
-//				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
-//
-//			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
-//			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
-//				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
-//		}
-//
-//		for (int i = 0; i < m; i++)
-//		{
-//			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
-//				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
-//
-//			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
-//			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
-//				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
-//		}
-//
-//		while (xs)
-//		{
-//			xs = out_stack(xs, &x1);
-//			//if (xs)
-//			//{
-//			//	if (x1 == x2) xs = out_stack(xs, &x1);
-//			//}
-//			if (not xs) break;
-//			xs = out_stack(xs, &x2);
-//
-//			linesBrasenhem(x1, ymax, x2, ymax);
-//		}
-//
-//		ymax--;
-//	}
-//
-//	delete[] vectors;
-//}
-
-void fill_triangle(vector v1, vector v2, vector v3)
+void fill_convex(vector* vertices, int n)
 {
-	int xmin = v1.x,
-		xmax = xmin,
-		ymax = v1.y,
-		ymin = ymax,
-		y;
+	int ymax = vertices[0].y,
+	    ymin = ymax;
+	vector* vectors = get_vectors(vertices, n);
 	stack<int>* xs = nullptr;
+	
+	for (int i = 1; i < n; i++)
+	{
+		if (vertices[i].y > ymax) ymax = vertices[i].y;
+		else if (vertices[i].y < ymin) ymin = vertices[i].y;
+	}
 
-	if (v2.x > xmax) xmax = v2.x;
-	else if (v2.x < xmin) xmin = v2.x;
-
-	if (v2.y > ymax) ymax = v2.y;
-	else if (v2.y < ymin) ymin = v2.y;
-
-	if (v3.x > xmax) xmax = v3.x;
-	else if (v2.x < xmin) xmin = v2.x;
-
-	if (v3.y > ymax) ymax = v3.y;
-	else if (v3.y < ymin) ymin = v3.y;
-
-	y = ymax;
-
-	while (y != ymin - 1)
+	while (ymax != ymin - 1)
 	{
 		int x1 = 0, x2 = 0;
 		int x = 0;
-		
-		if (y >= min(v1.y, v2.y) and y <= max(v1.y, v2.y))
-		{
-			x = round((y - v1.y) * ((float)(v2.x - v1.x) / (v2.y - v1.y)) + v1.x);
-			if (x >= xmin and x <= xmax) xs = in_stack(xs, x);
-		}
 
-		if (y >= min(v2.y, v3.y) and y <= max(v2.y, v3.y))
+		for (int i = 0; i < n; i++)
 		{
-			x = round((y - v2.y) * ((float)(v3.x - v2.x) / (v3.y - v2.y)) + v2.x);
-			if (x >= xmin and x <= xmax) xs = in_stack(xs, x);
-		}
+			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
+				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
 
-		if (y >= min(v3.y, v1.y) and y <= max(v3.y, v1.y))
-		{
-			x = round((y - v3.y) * ((float)(v1.x - v3.x) / (v1.y - v3.y)) + v3.x);
-			if (x >= xmin and x <= xmax) xs = in_stack(xs, x);
+			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
+			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
 		}
 
 		while (xs)
@@ -251,19 +168,87 @@ void fill_triangle(vector v1, vector v2, vector v3)
 			if (not xs) break;
 			xs = out_stack(xs, &x2);
 
-			linesBrasenhem(x1, y, x2, y);
+			linesBrasenhem(x1, ymax, x2, ymax);
 		}
 
-		y--;
+		ymax--;
 	}
+
+	delete[] vectors;
 }
+
+//void fillsgood(vector* vertices, int n)
+//{
+//	if (n == 3)
+//	{
+//		fill_convex(vertices, 3);
+//		return;
+//	}
+//
+//	int k;
+//
+//	while ((k = is_convex(vertices, n)) != -1)
+//	{
+//		vector* vectors = get_vectors(vertices, n);
+//
+//
+//
+//		//if (n - k == 2)
+//		//{
+//		//	vector temp[3] = {vertices[k], vertices[k + 1], vertices[0]};
+//		//	fill_convex(temp, 3);
+//		//}
+//		//else if (n - k == 1)
+//		//{
+//		//	vector temp[3] = {vertices[k], vertices[0], vertices[1]};
+//		//	fill_convex(temp, 3);
+//		//
+//		//	vertices++;
+//		//	n--;
+//		//	continue;
+//		//}
+//		//else fill_convex(vertices + k, 3);
+//		//
+//		//n--;
+//		//for (int i = k + 1; i < n; i++)
+//		//	vertices[i] = vertices[i + 1];		
+//	}
+//
+//	fill_convex(vertices, n);
+//	
+//}
 
 void fillsgood(vector* vertices, int n)
 {
-	for (int i = 2; i < n; i++) //lol
+	int k;
+
+	if ((k = is_convex(vertices, n)) != -1)
 	{
-		fill_triangle(vertices[0], vertices[i - 1], vertices[i]); 
+		vector* vectors = get_vectors(vertices, n);
+		int x = round(vertices[k + 2].x + vectors[k + 2].x * ((float)vertices[k + 2].x - vertices[k].x) / (vectors[k].x - vectors[k + 2].x)),
+			y = round(vertices[k + 2].y + vectors[k + 2].y * ((float)vertices[k + 2].x - vertices[k].x) / (vectors[k].x - vectors[k + 2].x)),
+			m = k + 2,
+			tx, ty;
+
+
+
+		for (int i = k + 3; i < n; i++)
+		{
+			tx = round(vertices[i].x + vectors[i].x * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
+			ty = round(vertices[i].y + vectors[i].y * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
+
+			if (tx >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				tx <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
+				ty >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
+				ty <= max(vertices[i].y, vertices[i].y + vectors[i].y))
+			{
+				linesBrasenhem(vertices[k].x, vertices[k].y, tx, ty);
+				break;
+			}
+		}
+
 	}
+	else fill_convex(vertices, n);
 }
 
 void linesBrasenhem(int x0, int y0, int xend, int yend)
@@ -310,7 +295,6 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 			set_pixel(x, y);
 		}
 	}
-
 }
 
 //вогнутость ряльно проблема из-за пересечения (а иногда и суко совпадения) прямых от сторон.
@@ -349,6 +333,6 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 
 //10 10
 //50 10
-//50 50
+//20 50
 //30 70
 //10 50
