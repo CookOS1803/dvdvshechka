@@ -19,7 +19,9 @@ void set_pixel(int x, int y);
 void set_pixels(vector* pixels, int n);
 vector* get_vectors(vector* vertices, int n);
 bool is_convex(vector* vertices, int n);
-void fill(vector* vertices, int n);
+//void fill(vector* vertices, int n);
+void fill_triangle(vector v1, vector v2, vector v3);
+void fillsgood(vector* vertices, int n);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
 
 int main(int argc, char** argv)
@@ -71,7 +73,7 @@ void display()
 
 	glColor3f(1, 1, 1);
 
-	fill(vertices, n);
+	fillsgood(vertices, n);
 	delete[] vertices;
 }
 
@@ -128,50 +130,115 @@ bool is_convex(vector* vertices, int n)
 	return true;
 }
 
-void fill(vector* vertices, int n)
+//void fill(vector* vertices, int n)
+//{
+//	int xmin = vertices[0].x,
+//		m = 0,
+//		ymax = vertices[0].y,
+//	    ymin = ymax;
+//	vector* vectors = get_vectors(vertices, n);
+//	stack<int>* xs = nullptr;
+//	
+//	for (int i = 1; i < n; i++)
+//	{
+//		if (vertices[i].x <= xmin)
+//		{
+//			xmin = vertices[i].x;
+//			m = i;
+//		}
+//
+//		if (vertices[i].y > ymax) ymax = vertices[i].y;
+//		else if (vertices[i].y < ymin) ymin = vertices[i].y;
+//	}
+//
+//	while (ymax != ymin - 1)
+//	{
+//		int x1 = 0, x2 = 0;
+//		int x = 0;
+//
+//		for (int i = m; i < n; i++)
+//		{
+//			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
+//				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
+//
+//			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
+//			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+//				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
+//		}
+//
+//		for (int i = 0; i < m; i++)
+//		{
+//			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
+//				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
+//
+//			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
+//			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+//				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
+//		}
+//
+//		while (xs)
+//		{
+//			xs = out_stack(xs, &x1);
+//			//if (xs)
+//			//{
+//			//	if (x1 == x2) xs = out_stack(xs, &x1);
+//			//}
+//			if (not xs) break;
+//			xs = out_stack(xs, &x2);
+//
+//			linesBrasenhem(x1, ymax, x2, ymax);
+//		}
+//
+//		ymax--;
+//	}
+//
+//	delete[] vectors;
+//}
+
+void fill_triangle(vector v1, vector v2, vector v3)
 {
-	int xmin = vertices[0].x,
-		m = 0,
-		ymax = vertices[0].y,
-	    ymin = ymax;
-	vector* vectors = get_vectors(vertices, n);
+	int xmin = v1.x,
+		xmax = xmin,
+		ymax = v1.y,
+		ymin = ymax,
+		y;
 	stack<int>* xs = nullptr;
-	
-	for (int i = 1; i < n; i++)
-	{
-		if (vertices[i].x <= xmin)
-		{
-			xmin = vertices[i].x;
-			m = i;
-		}
 
-		if (vertices[i].y > ymax) ymax = vertices[i].y;
-		else if (vertices[i].y < ymin) ymin = vertices[i].y;
-	}
+	if (v2.x > xmax) xmax = v2.x;
+	else if (v2.x < xmin) xmin = v2.x;
 
-	while (ymax != ymin - 1)
+	if (v2.y > ymax) ymax = v2.y;
+	else if (v2.y < ymin) ymin = v2.y;
+
+	if (v3.x > xmax) xmax = v3.x;
+	else if (v2.x < xmin) xmin = v2.x;
+
+	if (v3.y > ymax) ymax = v3.y;
+	else if (v3.y < ymin) ymin = v3.y;
+
+	y = ymax;
+
+	while (y != ymin - 1)
 	{
 		int x1 = 0, x2 = 0;
 		int x = 0;
-
-		for (int i = m; i < n; i++)
+		
+		if (y >= min(v1.y, v2.y) and y <= max(v1.y, v2.y))
 		{
-			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
-				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
-
-			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
-			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
-				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
+			x = round((y - v1.y) * ((float)(v2.x - v1.x) / (v2.y - v1.y)) + v1.x);
+			if (x >= xmin and x <= xmax) xs = in_stack(xs, x);
 		}
 
-		for (int i = 0; i < m; i++)
+		if (y >= min(v2.y, v3.y) and y <= max(v2.y, v3.y))
 		{
-			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
-				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
+			x = round((y - v2.y) * ((float)(v3.x - v2.x) / (v3.y - v2.y)) + v2.x);
+			if (x >= xmin and x <= xmax) xs = in_stack(xs, x);
+		}
 
-			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
-			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
-				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
+		if (y >= min(v3.y, v1.y) and y <= max(v3.y, v1.y))
+		{
+			x = round((y - v3.y) * ((float)(v1.x - v3.x) / (v1.y - v3.y)) + v3.x);
+			if (x >= xmin and x <= xmax) xs = in_stack(xs, x);
 		}
 
 		while (xs)
@@ -184,13 +251,19 @@ void fill(vector* vertices, int n)
 			if (not xs) break;
 			xs = out_stack(xs, &x2);
 
-			linesBrasenhem(x1, ymax, x2, ymax);
+			linesBrasenhem(x1, y, x2, y);
 		}
 
-		ymax--;
+		y--;
 	}
+}
 
-	delete[] vectors;
+void fillsgood(vector* vertices, int n)
+{
+	for (int i = 2; i < n; i++) //lol
+	{
+		fill_triangle(vertices[0], vertices[i - 1], vertices[i]); 
+	}
 }
 
 void linesBrasenhem(int x0, int y0, int xend, int yend)
@@ -269,5 +342,13 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 //10 10
 //60 10
 //60 60
-//30 0
+//30 20
 //10 60
+
+
+
+//10 10
+//50 10
+//50 50
+//30 70
+//10 50
