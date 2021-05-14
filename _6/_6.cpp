@@ -227,15 +227,15 @@ void fillsgood(vector* vertices, int n)
 		vector* vectors = get_vectors(vertices, n);
 		int x = round(vertices[k + 2].x + vectors[k + 2].x * ((float)vertices[k + 2].x - vertices[k].x) / (vectors[k].x - vectors[k + 2].x)),
 			y = round(vertices[k + 2].y + vectors[k + 2].y * ((float)vertices[k + 2].x - vertices[k].x) / (vectors[k].x - vectors[k + 2].x)),
-			m = k + 2,
 			tx, ty;
+
 
 
 
 		for (int i = k + 3; i < n; i++)
 		{
-			tx = round(vertices[i].x + vectors[i].x * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
-			ty = round(vertices[i].y + vectors[i].y * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
+			tx = round(vertices[i].x + vectors[i].x * ((float)vectors[k].x*(vertices[i].y - vertices[k].y) - vectors[k].y*(vertices[i].x - vertices[k].x)) / (vectors[i].x*vectors[k].y - vectors[k].x*vectors[i].y));
+			ty = round(vertices[i].y + vectors[i].y * ((float)vectors[k].x*(vertices[i].y - vertices[k].y) - vectors[k].y*(vertices[i].x - vertices[k].x)) / (vectors[i].x*vectors[k].y - vectors[k].x*vectors[i].y));
 
 			if (tx >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
 				tx <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
@@ -304,7 +304,7 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 //10 10
 //20 20
 //30 10
-//40 20
+//30 60
 //50 10
 //60 20
 //70 10
