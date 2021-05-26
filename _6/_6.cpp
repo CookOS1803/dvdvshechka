@@ -225,14 +225,23 @@ void fillsgood(vector* vertices, int n)
 	if ((k = is_convex(vertices, n)) != -1)
 	{
 		vector* vectors = get_vectors(vertices, n);
-		int x = round(vertices[k + 2].x + vectors[k + 2].x * ((float)vertices[k + 2].x - vertices[k].x) / (vectors[k].x - vectors[k + 2].x)),
-			y = round(vertices[k + 2].y + vectors[k + 2].y * ((float)vertices[k + 2].x - vertices[k].x) / (vectors[k].x - vectors[k + 2].x)),
-			tx, ty;
+		int x, y, tx, ty, i = k + 2;
+
+		while (i < n - 1)
+		{
+			x = round(vertices[i].x + vectors[i].x * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
+			y = round(vertices[i].y + vectors[i].y * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
+			
+			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				x <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
+				y >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
+				y <= max(vertices[i].y, vertices[i].y + vectors[i].y)) break;
+
+			i++;
+		}
 
 
-
-
-		for (int i = k + 3; i < n; i++)
+		while (i < n - 1)
 		{
 			tx = round(vertices[i].x + vectors[i].x * ((float)vectors[k].x*(vertices[i].y - vertices[k].y) - vectors[k].y*(vertices[i].x - vertices[k].x)) / (vectors[i].x*vectors[k].y - vectors[k].x*vectors[i].y));
 			ty = round(vertices[i].y + vectors[i].y * ((float)vectors[k].x*(vertices[i].y - vertices[k].y) - vectors[k].y*(vertices[i].x - vertices[k].x)) / (vectors[i].x*vectors[k].y - vectors[k].x*vectors[i].y));
@@ -240,12 +249,21 @@ void fillsgood(vector* vertices, int n)
 			if (tx >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
 				tx <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
 				ty >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
-				ty <= max(vertices[i].y, vertices[i].y + vectors[i].y))
+				ty <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
+				(tx - vertices[k].x)*(tx - vertices[k].x) + (ty - vertices[k].y)*(ty - vertices[k].y) < (x - vertices[k].x)*(x - vertices[k].x) + (y - vertices[k].y)*(y - vertices[k].y))
 			{
-				linesBrasenhem(vertices[k].x, vertices[k].y, tx, ty);
-				break;
+				x = tx;
+				y = ty;
 			}
+
+			i++;
 		}
+
+		delete[] vectors;
+
+		linesBrasenhem(vertices[k].x, vertices[k].y, x, y);
+
+
 
 	}
 	else fill_convex(vertices, n);
@@ -304,7 +322,7 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 //10 10
 //20 20
 //30 10
-//30 60
+//40 20
 //50 10
 //60 20
 //70 10
