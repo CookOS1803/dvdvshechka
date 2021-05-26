@@ -4,7 +4,6 @@
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glut32.lib")
 #include "glut.h"
-#include "stack.h"
 
 using namespace std;
 
@@ -22,6 +21,7 @@ int is_convex(vector* vertices, int n);
 void fill_convex(vector* vertices, int n);
 void fillsgood(vector* vertices, int n);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
+void horizontal_line(int x0, int xend, int y);
 float get_parameter(vector p1, vector p2, vector v1, vector v2);
 
 int main(int argc, char** argv)
@@ -62,7 +62,7 @@ void display()
 	}	
 	
 	if (is_convex(vertices, n) == -1) cout << "Convex";
-	else						cout << "NonConvex";
+	else							  cout << "NonConvex";
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(1, 0, 0);
@@ -74,7 +74,6 @@ void display()
 	glColor3f(1, 1, 1);
 
 	fillsgood(vertices, n);
-	//fill_convex(vertices, n);
 	delete[] vertices;
 }
 
@@ -136,7 +135,6 @@ void fill_convex(vector* vertices, int n)
 	int ymax = vertices[0].y,
 	    ymin = ymax;
 	vector* vectors = get_vectors(vertices, n);
-	stack<int>* xs = nullptr;
 	
 	for (int i = 1; i < n; i++)
 	{
@@ -146,78 +144,44 @@ void fill_convex(vector* vertices, int n)
 
 	while (ymax != ymin - 1)
 	{
-		int x1 = 0, x2 = 0;
-		int x = 0;
+		int x1 = 0, x2 = 0, i = 0, x;
 
-		for (int i = 0; i < n; i++)
+		for (; i < n; i++)
 		{
 			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
 				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
 
 			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
 			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
-				x <= max(vertices[i].x, vertices[i].x + vectors[i].x)) xs = in_stack(xs, x);
+				x <= max(vertices[i].x, vertices[i].x + vectors[i].x))
+			{
+				x1 = x2 = x;
+				break;
+			}
 		}
 
-		while (xs)
+		for (; i < n; i++)
 		{
-			xs = out_stack(xs, &x1);
-			//if (xs)
-			//{
-			//	if (x1 == x2) xs = out_stack(xs, &x1);
-			//}
-			if (not xs) break;
-			xs = out_stack(xs, &x2);
+			if (ymax < min(vertices[i].y, vertices[i].y + vectors[i].y) or
+				ymax > max(vertices[i].y, vertices[i].y + vectors[i].y)) continue;
 
-			linesBrasenhem(x1, ymax, x2, ymax);
+			x = round((ymax - vertices[i].y)*((float)vectors[i].x/vectors[i].y) + vertices[i].x);
+			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				x <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
+				x != x1)
+			{
+				x2 = x;
+				break;
+			}
 		}
 
+		horizontal_line(x1, x2, ymax);
+		
 		ymax--;
 	}
 
 	delete[] vectors;
 }
-
-//void fillsgood(vector* vertices, int n)
-//{
-//	if (n == 3)
-//	{
-//		fill_convex(vertices, 3);
-//		return;
-//	}
-//
-//	int k;
-//
-//	while ((k = is_convex(vertices, n)) != -1)
-//	{
-//		vector* vectors = get_vectors(vertices, n);
-//
-//
-//
-//		//if (n - k == 2)
-//		//{
-//		//	vector temp[3] = {vertices[k], vertices[k + 1], vertices[0]};
-//		//	fill_convex(temp, 3);
-//		//}
-//		//else if (n - k == 1)
-//		//{
-//		//	vector temp[3] = {vertices[k], vertices[0], vertices[1]};
-//		//	fill_convex(temp, 3);
-//		//
-//		//	vertices++;
-//		//	n--;
-//		//	continue;
-//		//}
-//		//else fill_convex(vertices + k, 3);
-//		//
-//		//n--;
-//		//for (int i = k + 1; i < n; i++)
-//		//	vertices[i] = vertices[i + 1];		
-//	}
-//
-//	fill_convex(vertices, n);
-//	
-//}
 
 void fillsgood(vector* vertices, int n)
 {
@@ -228,7 +192,6 @@ void fillsgood(vector* vertices, int n)
 		vector* vectors = get_vectors(vertices, n);
 		int x, y, tx, ty, i = k + 2, m;
 		float t;
-		bool find = false;
 
 		while (i < n)
 		{
@@ -242,7 +205,6 @@ void fillsgood(vector* vertices, int n)
 				y <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
 				x != vertices[k].x and y != vertices[k].y)
 			{
-				find = true;
 				m = i;
 				break;
 			}
@@ -250,7 +212,7 @@ void fillsgood(vector* vertices, int n)
 			i++;
 		}
 
-		if (!find)
+		if (i >= n)
 		{
 			i = 0;
 
@@ -272,11 +234,9 @@ void fillsgood(vector* vertices, int n)
 
 				i++;
 			}
-
-			i = k + 2;
 		}
 
-		while (i < n)
+		while (i > k ? i < n : i < k)
 		{
 			t = get_parameter(vertices[k], vertices[i], vectors[k], vectors[i]);
 			tx = round(vertices[i].x + vectors[i].x * t);
@@ -297,28 +257,7 @@ void fillsgood(vector* vertices, int n)
 			i++;
 		}
 
-		i = 0;
-
-		while (i < k)
-		{
-			t = get_parameter(vertices[k], vertices[i], vectors[k], vectors[i]);
-			tx = round(vertices[i].x + vectors[i].x * t);
-			ty = round(vertices[i].y + vectors[i].y * t);
-
-			if (tx >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
-				tx <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
-				ty >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
-				ty <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
-				tx != vertices[k].x and ty != vertices[k].y and
-				(tx - vertices[k].x)*(tx - vertices[k].x) + (ty - vertices[k].y)*(ty - vertices[k].y) < (x - vertices[k].x)*(x - vertices[k].x) + (y - vertices[k].y)*(y - vertices[k].y))
-			{
-				x = tx;
-				y = ty;
-				m = i;
-			}
-
-			i++;
-		}
+		delete[] vectors;
 
 		int diff = abs(m - k);
 		vector* v1 = new vector[diff + 1];
@@ -329,11 +268,9 @@ void fillsgood(vector* vertices, int n)
 			v1[0].x = x;
 			v1[0].y = y;
 
-			i = m;
-			for (int j = 1; i > k; j++)
+			for (int j = 1, i = m; i > k; j++, i--)
 			{
 				v1[j] = vertices[i];
-				i--;
 			}
 			i = 0;
 
@@ -346,10 +283,9 @@ void fillsgood(vector* vertices, int n)
 			v2[i].x = x;
 			v2[i].y = y;
 
-			for (int j = i + 1, i = m + 1; i < n; j++)
+			for (int j = i + 1, i = m + 1; i < n; j++, i++)
 			{
 				v2[j] = vertices[i];
-				i++;
 			}
 		}
 		else
@@ -357,11 +293,9 @@ void fillsgood(vector* vertices, int n)
 			v1[0].x = x;
 			v1[0].y = y;
 
-			i = m + 1;
-			for (int j = 1; i <= k; j++)
+			for (int j = 1, i = m + 1; i <= k; j++, i++)
 			{
 				v1[j] = vertices[i];
-				i++;
 			}
 			i = 0;
 
@@ -374,10 +308,9 @@ void fillsgood(vector* vertices, int n)
 			v2[i].x = x;
 			v2[i].y = y;
 
-			for (int j = i + 1, i = k + 1; i < n; j++)
+			for (int j = i + 1, i = k + 1; i < n; j++, i++)
 			{
 				v2[j] = vertices[i];
-				i++;
 			}
 		}
 
@@ -385,12 +318,6 @@ void fillsgood(vector* vertices, int n)
 		delete[] v1;
 		fillsgood(v2, n - diff + 1);
 		delete[] v2;
-
-		delete[] vectors;
-
-		//linesBrasenhem(vertices[k].x, vertices[k].y, x, y);
-
-
 	}
 	else fill_convex(vertices, n);
 }
@@ -438,6 +365,17 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 			}
 			set_pixel(x, y);
 		}
+	}
+}
+
+void horizontal_line(int x0, int xend, int y)
+{
+	int xInc = xend - x0 > 0 ? 1 : -1;
+
+	while (x0 != xend + xInc)
+	{
+		set_pixel(x0, y);
+		x0 += xInc;
 	}
 }
 

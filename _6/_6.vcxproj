@@ -19,13 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stack.cpp" />
-    <ClCompile Include="stack_impl.cpp" />
     <ClCompile Include="_6.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glut.h" />
-    <ClInclude Include="stack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="glut.dll" />
