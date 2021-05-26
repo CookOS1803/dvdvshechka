@@ -22,6 +22,7 @@ int is_convex(vector* vertices, int n);
 void fill_convex(vector* vertices, int n);
 void fillsgood(vector* vertices, int n);
 void linesBrasenhem(int x0, int y0, int xend, int yend);
+float get_parameter(vector p1, vector p2, vector v1, vector v2);
 
 int main(int argc, char** argv)
 {
@@ -225,44 +226,169 @@ void fillsgood(vector* vertices, int n)
 	if ((k = is_convex(vertices, n)) != -1)
 	{
 		vector* vectors = get_vectors(vertices, n);
-		int x, y, tx, ty, i = k + 2;
+		int x, y, tx, ty, i = k + 2, m;
+		float t;
+		bool find = false;
 
-		while (i < n - 1)
+		while (i < n)
 		{
-			x = round(vertices[i].x + vectors[i].x * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
-			y = round(vertices[i].y + vectors[i].y * ((float)vertices[i].x - vertices[k].x) / (vectors[k].x - vectors[i].x));
+			t = get_parameter(vertices[k], vertices[i], vectors[k], vectors[i]);
+			x = round(vertices[i].x + vectors[i].x * t);
+			y = round(vertices[i].y + vectors[i].y * t);
 			
 			if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
 				x <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
 				y >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
-				y <= max(vertices[i].y, vertices[i].y + vectors[i].y)) break;
-
-			i++;
-		}
-
-
-		while (i < n - 1)
-		{
-			tx = round(vertices[i].x + vectors[i].x * ((float)vectors[k].x*(vertices[i].y - vertices[k].y) - vectors[k].y*(vertices[i].x - vertices[k].x)) / (vectors[i].x*vectors[k].y - vectors[k].x*vectors[i].y));
-			ty = round(vertices[i].y + vectors[i].y * ((float)vectors[k].x*(vertices[i].y - vertices[k].y) - vectors[k].y*(vertices[i].x - vertices[k].x)) / (vectors[i].x*vectors[k].y - vectors[k].x*vectors[i].y));
-
-			if (tx >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
-				tx <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
-				ty >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
-				ty <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
-				(tx - vertices[k].x)*(tx - vertices[k].x) + (ty - vertices[k].y)*(ty - vertices[k].y) < (x - vertices[k].x)*(x - vertices[k].x) + (y - vertices[k].y)*(y - vertices[k].y))
+				y <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
+				x != vertices[k].x and y != vertices[k].y)
 			{
-				x = tx;
-				y = ty;
+				find = true;
+				m = i;
+				break;
 			}
 
 			i++;
 		}
 
+		if (!find)
+		{
+			i = 0;
+
+			while (i < k)
+			{
+				t = get_parameter(vertices[k], vertices[i], vectors[k], vectors[i]);
+				x = round(vertices[i].x + vectors[i].x * t);
+				y = round(vertices[i].y + vectors[i].y * t);
+
+				if (x >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+					x <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
+					y >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
+					y <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
+					x != vertices[k].x and y != vertices[k].y)
+				{
+					m = i;
+					break;
+				}
+
+				i++;
+			}
+
+			i = k + 2;
+		}
+
+		while (i < n)
+		{
+			t = get_parameter(vertices[k], vertices[i], vectors[k], vectors[i]);
+			tx = round(vertices[i].x + vectors[i].x * t);
+			ty = round(vertices[i].y + vectors[i].y * t);
+
+			if (tx >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				tx <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
+				ty >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
+				ty <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
+				tx != vertices[k].x and ty != vertices[k].y and
+				(tx - vertices[k].x)*(tx - vertices[k].x) + (ty - vertices[k].y)*(ty - vertices[k].y) < (x - vertices[k].x)*(x - vertices[k].x) + (y - vertices[k].y)*(y - vertices[k].y))
+			{
+				x = tx;
+				y = ty;
+				m = i;
+			}
+
+			i++;
+		}
+
+		i = 0;
+
+		while (i < k)
+		{
+			t = get_parameter(vertices[k], vertices[i], vectors[k], vectors[i]);
+			tx = round(vertices[i].x + vectors[i].x * t);
+			ty = round(vertices[i].y + vectors[i].y * t);
+
+			if (tx >= min(vertices[i].x, vertices[i].x + vectors[i].x) and
+				tx <= max(vertices[i].x, vertices[i].x + vectors[i].x) and
+				ty >= min(vertices[i].y, vertices[i].y + vectors[i].y) and
+				ty <= max(vertices[i].y, vertices[i].y + vectors[i].y) and
+				tx != vertices[k].x and ty != vertices[k].y and
+				(tx - vertices[k].x)*(tx - vertices[k].x) + (ty - vertices[k].y)*(ty - vertices[k].y) < (x - vertices[k].x)*(x - vertices[k].x) + (y - vertices[k].y)*(y - vertices[k].y))
+			{
+				x = tx;
+				y = ty;
+				m = i;
+			}
+
+			i++;
+		}
+
+		int diff = abs(m - k);
+		vector* v1 = new vector[diff + 1];
+		vector* v2 = new vector[n - diff + 1];
+
+		if (m > k)
+		{
+			v1[0].x = x;
+			v1[0].y = y;
+
+			i = m;
+			for (int j = 1; i > k; j++)
+			{
+				v1[j] = vertices[i];
+				i--;
+			}
+			i = 0;
+
+			while (i <= k)
+			{
+				v2[i] = vertices[i];
+				i++;
+			}
+
+			v2[i].x = x;
+			v2[i].y = y;
+
+			for (int j = i + 1, i = m + 1; i < n; j++)
+			{
+				v2[j] = vertices[i];
+				i++;
+			}
+		}
+		else
+		{
+			v1[0].x = x;
+			v1[0].y = y;
+
+			i = m + 1;
+			for (int j = 1; i <= k; j++)
+			{
+				v1[j] = vertices[i];
+				i++;
+			}
+			i = 0;
+
+			while (i <= m)
+			{
+				v2[i] = vertices[i];
+				i++;
+			}
+
+			v2[i].x = x;
+			v2[i].y = y;
+
+			for (int j = i + 1, i = k + 1; i < n; j++)
+			{
+				v2[j] = vertices[i];
+				i++;
+			}
+		}
+
+		fillsgood(v1, diff + 1);
+		delete[] v1;
+		fillsgood(v2, n - diff + 1);
+		delete[] v2;
+
 		delete[] vectors;
 
-		linesBrasenhem(vertices[k].x, vertices[k].y, x, y);
-
+		//linesBrasenhem(vertices[k].x, vertices[k].y, x, y);
 
 
 	}
@@ -315,6 +441,11 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 	}
 }
 
+float get_parameter(vector p1, vector p2, vector v1, vector v2)
+{
+	return (float)(v1.x*(p2.y - p1.y) - v1.y*(p2.x - p1.x)) / (v2.x*v1.y - v1.x*v2.y);
+}
+
 //вогнутость ряльно проблема из-за пересечения (а иногда и суко совпадения) прямых от сторон.
 //надо сначала посчитать все точки пересечения, а потом рисовать между парами точек, пушо если точка имеет нецелый x, то всё, отчисление
 
@@ -329,7 +460,7 @@ void linesBrasenhem(int x0, int y0, int xend, int yend)
 //70 20
 //60 30
 //50 20
-//40 30
+//30 30
 //30 20
 //20 30
 //10 20 *
